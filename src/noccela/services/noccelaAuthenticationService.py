@@ -2,8 +2,6 @@ import requests
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
-from src.api.oauth2Token import Oauth2Token
-
 class NoccelaAuthenticationService():
 	
 	def __init__(self, auth_base_url, token_url):
