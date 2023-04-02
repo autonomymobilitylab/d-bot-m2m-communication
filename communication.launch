@@ -1,0 +1,5 @@
+<launch>
+  <node name="kone_publisher" pkg="d_bot_m2m_communication" type="src/kone_publisher.py">
+    <param name="publish_rate" value="1.0" />
+  </node>
+</launch>
