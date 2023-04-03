@@ -4,7 +4,7 @@ D-bot ROS machine-to-machine communication package
 
 ## installation
 rename .env.sample to .env
-change properties to actual values
+change properties template values to actual values
 
 ## install dependencies
 pip install requests requests_oauthlib
