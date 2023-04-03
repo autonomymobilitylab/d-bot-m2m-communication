@@ -8,3 +8,4 @@ change properties to actual values
 
 ## install dependencies
 pip install requests requests_oauthlib
+pip install websockets

@@ -1,6 +1,6 @@
 import requests
 import json
-from src.services.serviceUtil import serviceUtil
+from ..services.serviceUtil import serviceUtil
 
 class DeviceService():
     
