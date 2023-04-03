@@ -9,3 +9,10 @@ change properties template values to actual values
 ## install dependencies
 pip install requests requests_oauthlib
 pip install websockets
+
+## starting package
+```bash
+source /catkin_ws/devel/setup.bash
+for example lauching task manager
+roslaunch d_bot_m2m_communication communication.launch
+```

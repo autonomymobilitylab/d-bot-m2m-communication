@@ -1,5 +1,5 @@
 <launch>
-  <node name="kone_publisher" pkg="d_bot_m2m_communication" type="src/kone_publisher.py">
-    <param name="publish_rate" value="1.0" />
+  <node name="beacon_communication" pkg="d_bot_m2m_communication" type="src/beacon_communication.py">
+    <param name="publish_rate" value="16.0" />
   </node>
 </launch>
