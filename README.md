@@ -10,6 +10,7 @@ change properties template values to actual values
 
 ## install dependencies
 pip install requests requests_oauthlib
+pip install python-dotenv  
 pip install websockets
 
 ### Testing connections

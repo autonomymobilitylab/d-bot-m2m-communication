@@ -57,19 +57,13 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS message_runtime std_msgs
 #  INCLUDE_DIRS include
 #  LIBRARIES d-bot-m2m-communication
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
-###########
-## Build ##
-###########
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
 
 #############
 ## Install ##
@@ -78,10 +72,16 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-    src/kone_publisher.py
     src/beacon_communication.py
-    src/ilmatar_publisher.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+
+###########
+## Build ##
+###########
+include_directories(
+  ${catkin_INCLUDE_DIRS}
 )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
