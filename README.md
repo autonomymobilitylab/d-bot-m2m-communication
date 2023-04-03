@@ -8,12 +8,18 @@ D-bot ROS machine-to-machine communication package
 rename .env.sample to .env
 change properties template values to actual values
 
-### Install dependencies
-pip install requests requests_oauthlib  
+## install dependencies
+pip install requests requests_oauthlib
 pip install websockets
 
 ### Testing connections
 ```bash
 cd src
 python3 beacon_tester.py
+```
+## starting package
+```bash
+source /catkin_ws/devel/setup.bash
+for example lauching task manager
+roslaunch d_bot_m2m_communication communication.launch
 ```
