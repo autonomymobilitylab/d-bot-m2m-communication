@@ -7,10 +7,14 @@ from dotenv import dotenv_values
 
 from d_bot_m2m_task_executor.srv import TaskCall, TaskCallResponse
 from resources.config_loader import ConfigLoader
+from d_bot_m2m_communication.src.kone.services.authenticationService import KoneAuthenticationService
 
 class ElevatorCommunication:
     def __init__(self, config):
         self.rate = rospy.Rate(1)
+        self.auth_service = KoneAuthenticationService(config)
+        rospy.loginfo('Requesting auth token')
+        self.auth_service.requestKoneAccessToken(config['ELEVATOR_CLIENT_id'], config['ELEVATOR_CLIENT_SECRET'])
         # TODO remove when services are done
         self.hello_pub = self.startHelloworldPublisher()
 

@@ -64,9 +64,25 @@ class WebsocketService():
                     "action": "registerTagLocation",
                     "payload": {}
                 }
-                msg = json.dumps(msg)
-                await ws_connection.send(msg)
-                self.ws_subscribed = True
+            liftCallPayload = {
+                    type: 'lift-call-api-v2',
+                    buildingId: 'building:9990000951',
+                    callType: 'action',
+                    groupId: '1',
+                    payload: {
+                    request_id: 252390420,
+                    area: 3000,
+                    time: '2022-03-10T07:17:33.298515Z',
+                    terminal: 1,
+                    call: { 
+                        action: 2, 
+                        destination: 5000 
+                    }
+                    }
+                } 
+            msg = json.dumps(msg)
+            await ws_connection.send(msg)
+            self.ws_subscribed = True
             result = await ws_connection.recv()
             if self.isPingMsg(result):
                 # Respond with pong
@@ -75,6 +91,42 @@ class WebsocketService():
             else:
                 result = json.loads(result)
             return result
+
+    def generateliftCallPayload2(self, buildingID):
+        return {
+                    type: 'lift-call-api-v2',
+                    buildingId: buildingID,
+                    callType: 'action',
+                    groupId: '1',
+                    payload: {
+                    request_id: 252390420,
+                    area: 3000,
+                    time: '2022-03-10T07:17:33.298515Z',
+                    terminal: 1,
+                    call: { 
+                        action: 2, 
+                        destination: 5000 
+                    }
+                    }
+                } 
+ 
+    def generateliftCallPayload(self, buildingID):
+        return {
+            "type" = "lift-call-api-v2",
+            "buildingId" = buildingID,
+            "callType" = "action",
+            "groupId" = "1",
+            "payload" = {
+                "request_id" = "252390420",
+                "area" = "3000",
+                "time" = "2022-03-10T07:17:33.298515Z",
+                "terminal" = "1",
+                "call" = {
+                        "action" = "2", 
+                        "destination" =  "5000" 
+                    }
+                } 
+        }
 
     def isPingMsg(self, result):
         return result == ''
