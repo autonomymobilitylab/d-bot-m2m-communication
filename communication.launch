@@ -2,4 +2,7 @@
   <node name="beacon_communication" pkg="d_bot_m2m_communication" type="beacon_communication.py">
     <param name="publish_rate" value="16.0" />
   </node>
+  <node name="elevator_communication" pkg="d_bot_m2m_communication" type="elevator_communication.py">
+    <param name="publish_rate" value="1" />
+  </node>
 </launch>
