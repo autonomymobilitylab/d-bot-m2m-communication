@@ -2,6 +2,7 @@ from noccela.services.noccelaAuthenticationService import NoccelaAuthenticationS
 from noccela.services.infoService import InfoService
 from noccela.services.deviceService import DeviceService
 from noccela.services.websocketService import WebsocketService
+from resources.config_loader import ConfigLoader
 
 import asyncio
 from dotenv import dotenv_values
@@ -19,7 +20,10 @@ class BeaconTest:
 
 
 if __name__ == '__main__':
-    config = dotenv_values(".env")
+    config = dotenv_values("resources/.env")
+    if bool(config) == False:
+        config = ConfigLoader()
+        config.load(['BEACON_BASE_AUTH_URL', 'BEACON_AUTH_URL', 'BEACON_CLIENT_ID', 'BEACON_CLIENT_SECRET', 'BEACON_API_URL', 'BEACON_ACCOUNT', 'BEACON_SITE'])
     tester = BeaconTest(config)
     print('access_token:')
     print(tester.token)
