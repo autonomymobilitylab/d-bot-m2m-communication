@@ -11,3 +11,5 @@ export ELEVATOR_CLIENT_id=template_Value
 export ELEVATOR_CLIENT_SECRET=template_Value
 export ELEVATOR_API_URL=template_Value
 export ELEVATOR_WS_URL=template_Value
+
+export CRANE_OPCUA_URL=template_Value

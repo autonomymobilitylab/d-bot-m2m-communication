@@ -5,4 +5,7 @@
   <node name="elevator_communication" pkg="d_bot_m2m_communication" type="elevator_communication.py">
     <param name="publish_rate" value="1" />
   </node>
+    <node name="crane_communication" pkg="d_bot_m2m_communication" type="crane_communication.py">
+    <param name="publish_rate" value="1" />
+  </node>
 </launch>
