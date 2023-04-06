@@ -60,7 +60,7 @@ class WebsocketService():
             # Subscribe to location updates
             if (self.ws_subscribed == False):
                 msg = {
-                    "uniqueId": "getLocations",
+                    "uniqueId": "123",
                     "action": "registerTagLocation",
                     "payload": {}
                 }

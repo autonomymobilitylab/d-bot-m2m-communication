@@ -15,7 +15,7 @@ class BeaconTest:
         self.token = self.authService.requestNoccelaAccessToken(
             config['BEACON_CLIENT_ID'], config['BEACON_CLIENT_SECRET'])
         self.info_service = InfoService(self.token, config['BEACON_API_URL'])
-        self.device_service = DeviceService(self.token, config['BEACON_API_URL'], config['BEACON_ACCOUNT'])
+        self.device_service = DeviceService(self.token, config['BEACON_API_URL'], config['BEACON_ACCOUNT'], config['BEACON_SITE'])
         self.beacon_ws = WebsocketService(self.token, config['BEACON_API_URL'], config['BEACON_ACCOUNT'], config['BEACON_SITE'])
 
 
@@ -25,11 +25,15 @@ if __name__ == '__main__':
         config = ConfigLoader()
         config.load(['BEACON_BASE_AUTH_URL', 'BEACON_AUTH_URL', 'BEACON_CLIENT_ID', 'BEACON_CLIENT_SECRET', 'BEACON_API_URL', 'BEACON_ACCOUNT', 'BEACON_SITE'])
     tester = BeaconTest(config)
-    print('access_token:')
-    print(tester.token)
     print('account info:')
     print(tester.info_service.getInfo())
     print('devices info:')
     print(tester.device_service.getDevicesInfo())
+    print('devices status info:')
+    print(tester.device_service.getDevicesStatusInfo())
+    print('tag history:')
+    print(tester.device_service.getTagHistoryAll())
+    print('specific tag history:')
+    print(tester.device_service.getTagHistory(config['BEACON_TEST_TAG_ID']))
     print('devices locations:')
     print(asyncio.run(tester.beacon_ws.fetchData()))
