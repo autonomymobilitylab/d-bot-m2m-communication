@@ -2,12 +2,11 @@ import requests
 
 from src.api.oauth2Token import Oauth2Token
 
-class KoneAuthenticationService():
+class AuthenticationService():
 	
-	def __init__(self, user):
-		self.user = user
+	def __init__(self, config):
 		self.token = ""
-		self.url = "https://dev.kone.com"
+		self.url = config['ELEVATOR_API_URL']
 
 	def requestKoneAccessToken(self, client_id, client_secret):
 		address = self.url + "/api/v2/oauth2/token"
@@ -22,3 +21,4 @@ class KoneAuthenticationService():
 		resJson = response.json()
 		self.token = Oauth2Token(resJson["expires_in"], resJson["access_token"], resJson["token_type"], resJson["scope"])
 		return self.token
+

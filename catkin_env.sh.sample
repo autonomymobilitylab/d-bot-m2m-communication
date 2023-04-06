@@ -5,6 +5,7 @@ export BEACON_AUTH_URL=https://auth.noccela.com/connect/token
 export BEACON_BASE_AUTH_URL=https://auth.noccela.com
 export BEACON_ACCOUNT=template_Value
 export BEACON_SITE=template_Value
+export BEACON_TEST_TAG_ID=template_Value
 
 export ELEVATOR_CLIENT_id=template_Value
 export ELEVATOR_CLIENT_SECRET=template_Value
