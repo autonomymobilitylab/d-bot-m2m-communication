@@ -1,0 +1,4 @@
+int32 id
+---
+# service response
+boolean status
