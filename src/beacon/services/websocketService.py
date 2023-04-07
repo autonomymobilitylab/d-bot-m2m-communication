@@ -5,9 +5,6 @@ import time
 
 from ..services.serviceUtil import serviceUtil
 
-
-
-
 class WebsocketService():
 
     def __init__(self, token, api_url, acc, site):
