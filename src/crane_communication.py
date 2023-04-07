@@ -16,16 +16,21 @@ class CraneCommunication:
     
     # returns PositionResponse
     def get_crane_hook_pos(self, req):
-        return self.crane.get_coordinates_absolute()
+        self.crane.connect()
+        res = self.crane.get_coordinates_absolute()
+        self.crane.disconnect()
+        return res
 
     # return StatusResponse
     def get_crane_movement_status(self, req):
+        self.crane.connect()
         res = True
         self.crane.get_trolley_speed_request()
         if (self.crane.get_trolley_speed_request() == 0 and 
             self.crane.get_bridge_speed_request() == 0 and
             self.crane.get_hoist_speed_request == 0):
             res = False
+        self.crane.disconnect()
         return res
 
     def start_crane_position_service(self):
