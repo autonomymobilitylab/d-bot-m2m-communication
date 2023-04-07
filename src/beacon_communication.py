@@ -5,15 +5,15 @@ import websockets
 import json
 from dotenv import dotenv_values
 
-from noccela.services.noccelaAuthenticationService import NoccelaAuthenticationService
-from noccela.services.websocketService import WebsocketService
+from beacon.services.authenticationService import AuthenticationService
+from beacon.services.websocketService import WebsocketService
 from resources.config_loader import ConfigLoader
 
 class BeaconCommunication:
 
     def __init__(self, config):
-        self.authService = NoccelaAuthenticationService(config['BEACON_BASE_AUTH_URL'], config['BEACON_AUTH_URL'])
-        self.token = self.authService.requestNoccelaAccessToken(
+        self.authService = AuthenticationService(config['BEACON_BASE_AUTH_URL'], config['BEACON_AUTH_URL'])
+        self.token = self.authService.requestAccessToken(
             config['BEACON_CLIENT_ID'], config['BEACON_CLIENT_SECRET'])
         if (self.token):
             rospy.loginfo('Received access token')
