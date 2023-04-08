@@ -1,10 +1,11 @@
 import rospy
 from std_msgs.msg import String
-from ilmatar_python_lib import Crane
+from ilmatar_python_lib.crane import Crane
 from dotenv import dotenv_values
 
 from d_bot_m2m_communication.srv import Position, PositionResponse
 from d_bot_m2m_communication.srv import Status, StatusResponse
+from d_bot_m2m_communication.srv import CraneTaskCall, CraneTaskCallResponse
 from resources.config_loader import ConfigLoader
 
 
@@ -13,6 +14,7 @@ class CraneCommunication:
         self.crane = Crane(opcua_url)
         self.crane_pos_srv = self.start_crane_position_service()
         self.crane_status_srv = self.start_crane_status_service()
+        self.crane_stopper_srv = self.start_crane_stopper_service()
     
     # returns PositionResponse
     def get_crane_hook_pos(self, req):
@@ -33,11 +35,21 @@ class CraneCommunication:
         self.crane.disconnect()
         return res
 
+    def stop_crane(self, req):
+        # TODO stop correct device with request device_id
+        self.crane.connect()
+        self.crane.stop_all()
+        self.crane.disconnect()
+        return True
+
     def start_crane_position_service(self):
         return rospy.Service('position', Position, self.get_crane_hook_pos)
 
     def start_crane_status_service(self):
         return rospy.Service('status', Status, self.get_crane_movement_status)
+    
+    def start_crane_stopper_service(self):
+        return rospy.Service('stop', CraneTaskCall, self.stop_crane)
 
 if __name__ == '__main__':
     config = dotenv_values("resources/.env")
