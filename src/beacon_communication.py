@@ -16,17 +16,22 @@ class BeaconCommunication:
 
     def __init__(self, config):
         self.authService = AuthenticationService(config['BEACON_BASE_AUTH_URL'], config['BEACON_AUTH_URL'])
-        self.token = self.authService.requestAccessToken(
-            config['BEACON_CLIENT_ID'], config['BEACON_CLIENT_SECRET'])
+        try:
+            self.token = self.authService.requestAccessToken(
+                config['BEACON_CLIENT_ID'], config['BEACON_CLIENT_SECRET'])
+        except:
+            rospy.loginfo('No connection to beacon auth')
         if (self.token):
             rospy.loginfo('Received access token')
-        self.beacon_ws = WebsocketService(self.token, config['BEACON_API_URL'], config['BEACON_ACCOUNT'], config['BEACON_SITE'])
-        if (self.beacon_ws.ws_domain):
-            rospy.loginfo('Received websocket domain location')
         self.rate = rospy.Rate(0.2)
         self.info_service = InfoService(self.token, config['BEACON_API_URL'])
         self.device_service = DeviceService(self.token, config['BEACON_API_URL'], config['BEACON_ACCOUNT'], config['BEACON_SITE'])
-        self.beacon_ws = WebsocketService(self.token, config['BEACON_API_URL'], config['BEACON_ACCOUNT'], config['BEACON_SITE'])
+        try:
+            self.beacon_ws = WebsocketService(self.token, config['BEACON_API_URL'], config['BEACON_ACCOUNT'], config['BEACON_SITE'])
+            if (self.beacon_ws):
+                rospy.loginfo('Received websocket domain location')
+        except:
+            rospy.loginfo('No connection to beacon websocket')
         self.config = config
 
     def run_work_area_protection(self):
