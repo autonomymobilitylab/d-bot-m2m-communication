@@ -8,7 +8,8 @@ setup_args = generate_distutils_setup(
     packages=['ilmatar',
               'kone', 
               'resources',
-              'noccela'
+              'beacon',
+              'ilmatar_python_lib',
               ],
     package_dir={'': 'src'})
 

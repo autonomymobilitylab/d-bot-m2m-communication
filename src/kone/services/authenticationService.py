@@ -1,6 +1,6 @@
 import requests
 
-from src.api.oauth2Token import Oauth2Token
+from ..api.oauth2Token import Oauth2Token
 
 class AuthenticationService():
 	

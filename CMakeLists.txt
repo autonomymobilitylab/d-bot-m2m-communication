@@ -26,6 +26,9 @@ catkin_python_setup()
 ## Generate services in the 'srv' folder
 add_service_files(
     FILES
+    CraneTaskCall.srv
+    Position.srv
+    Status.srv
     TaskCall.srv
 )
 
@@ -74,6 +77,7 @@ catkin_package(
 catkin_install_python(PROGRAMS
     src/beacon_communication.py
     src/elevator_communication.py
+    src/crane_communication.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
