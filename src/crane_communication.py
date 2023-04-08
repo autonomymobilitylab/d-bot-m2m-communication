@@ -11,7 +11,10 @@ from resources.config_loader import ConfigLoader
 
 class CraneCommunication:
     def __init__(self, opcua_url):
-        self.crane = Crane(opcua_url)
+        try:
+            self.crane = Crane(opcua_url)
+        except:
+            rospy.loginfo('Crane connection failed')
         self.crane_pos_srv = self.start_crane_position_service()
         self.crane_status_srv = self.start_crane_status_service()
         self.crane_stopper_srv = self.start_crane_stopper_service()
