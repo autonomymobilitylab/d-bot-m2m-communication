@@ -1,0 +1,4 @@
+int32 task
+int32 device_id
+---
+boolean completion
