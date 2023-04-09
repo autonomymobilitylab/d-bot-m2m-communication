@@ -5,12 +5,14 @@ import websockets
 import json
 from dotenv import dotenv_values
 
+from api.task import Task
 from beacon.services.authenticationService import AuthenticationService
 from beacon.services.websocketService import WebsocketService
 from beacon.services.infoService import InfoService
 from beacon.services.deviceService import DeviceService
 from beacon.buzzerUtil import BuzzerUtil
 from resources.config_loader import ConfigLoader
+from d_bot_m2m_communication.srv import TaskCall, TaskCallResponse
 
 class BeaconCommunication:
 
@@ -33,20 +35,42 @@ class BeaconCommunication:
         except:
             rospy.loginfo('No connection to beacon websocket')
         self.config = config
+        self.workarea_srv = self.start_workarea_protection_service()
+        self.workarea = None
+        self.workprotection = False
 
-    def run_work_area_protection(self):
+    def run_work_area_protection(self, area_id):
         #history = self.device_service.getTagHistoryAll()
         history = self.device_service.getTagHistory(config['BEACON_TEST_TAG_ID'])
-        rospy.loginfo(history)
-        res = BuzzerUtil().get_recent_tags_in_workarea(history, config['BEACON_TEST_AREA_ID'])
-        rospy.loginfo(res)
+        # rospy.loginfo(history)
+        res = BuzzerUtil().get_recent_tags_in_workarea(history, area_id)
         for tag in res:
+            rospy.loginfo('Found Tags in work area')
             success = self.device_service.play_tag_buzzer(tag)
             rospy.loginfo(success)
+
+    def init_work_area_protection(self, req):
+        task = Task().load(req.task)
+        try:
+            self.workarea = task.device_id
+            self.workprotection = True
+            task.success = True
+            rospy.loginfo('Starting work area protection')
+        except:
+            rospy.loginfo('Beacon workarea protection failed')
+            task.error = "Beacon workarea protection failed"
+            task.success = False
+        task_json = task.jsonify()
+        response = TaskCallResponse()
+        response.task = task_json
+        return response
 
     def taglocationPublisher(self):
         pub = rospy.Publisher('taglocation', String, queue_size=0)
         asyncio.get_event_loop().run_until_complete(self.fetchTagLocation(pub))
+    
+    def start_workarea_protection_service(self):
+        return rospy.Service('/beacon_communication/protection', TaskCall, self.init_work_area_protection)
 
     async def fetchTagLocation(self, pub):
         msg_pub = String()
@@ -97,5 +121,6 @@ if __name__ == '__main__':
     rospy.loginfo('Starting tag publishing')
     # beacon.taglocationPublisher()
     while not rospy.is_shutdown():
-        beacon.run_work_area_protection()
+        if (beacon.workprotection):
+            beacon.run_work_area_protection(beacon.workarea)
         beacon.rate.sleep()
