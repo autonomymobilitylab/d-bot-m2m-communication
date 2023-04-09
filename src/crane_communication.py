@@ -6,6 +6,7 @@ from dotenv import dotenv_values
 from d_bot_m2m_communication.srv import Position, PositionResponse
 from d_bot_m2m_communication.srv import Status, StatusResponse
 from d_bot_m2m_communication.srv import CraneTaskCall, CraneTaskCallResponse
+from d_bot_m2m_communication.srv import Task, TaskResponse
 from resources.config_loader import ConfigLoader
 
 
@@ -45,12 +46,15 @@ class CraneCommunication:
         self.crane.disconnect()
         return True
 
+    # /crane_communication/position
     def start_crane_position_service(self):
-        return rospy.Service('position', Position, self.get_crane_hook_pos)
+        return rospy.Service('position', Task, self.get_crane_hook_pos)
 
+    # /crane_communication/status
     def start_crane_status_service(self):
         return rospy.Service('status', Status, self.get_crane_movement_status)
     
+    # /crane_communication/stop
     def start_crane_stopper_service(self):
         return rospy.Service('stop', CraneTaskCall, self.stop_crane)
 
