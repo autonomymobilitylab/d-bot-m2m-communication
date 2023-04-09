@@ -1,3 +1,3 @@
-int32 task
+string task
 ---
-int8 completion
+string task

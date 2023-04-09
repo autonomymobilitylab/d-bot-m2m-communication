@@ -3,12 +3,12 @@ from std_msgs.msg import String
 from ilmatar_python_lib.crane import Crane
 from dotenv import dotenv_values
 
+from api.task import Task
 from d_bot_m2m_communication.srv import Position, PositionResponse
 from d_bot_m2m_communication.srv import Status, StatusResponse
 from d_bot_m2m_communication.srv import CraneTaskCall, CraneTaskCallResponse
-from d_bot_m2m_communication.srv import Task, TaskResponse
+from d_bot_m2m_communication.srv import TaskCall, TaskCallResponse
 from resources.config_loader import ConfigLoader
-
 
 class CraneCommunication:
     def __init__(self, opcua_url):
@@ -22,17 +22,25 @@ class CraneCommunication:
     
     # returns PositionResponse
     def get_crane_hook_pos(self, req):
-        self.crane.connect()
-        res = self.crane.get_coordinates_absolute()
-        self.crane.disconnect()
-        return res
+        rospy.loginfo(req)
+        #task = Task().load(req)
+        #self.crane.connect()
+        #res = self.crane.get_coordinates_absolute()
+        #task.location = {
+        #    "x": res[0],
+        #    "y": res[1],
+        #    "z": res[2]
+        #}
+        #self.crane.disconnect()
+        # return task.jsonify()
+        return req
 
     # return StatusResponse
     def get_crane_movement_status(self, req):
         self.crane.connect()
         res = True
         self.crane.get_trolley_speed_request()
-        if (self.crane.get_trolley_speed_request() == 0 and 
+        if (self.crane.get_trolley_speed_request() == 0 and
             self.crane.get_bridge_speed_request() == 0 and
             self.crane.get_hoist_speed_request == 0):
             res = False
@@ -48,7 +56,7 @@ class CraneCommunication:
 
     # /crane_communication/position
     def start_crane_position_service(self):
-        return rospy.Service('position', Task, self.get_crane_hook_pos)
+        return rospy.Service('/crane_communication/position', TaskCall, self.get_crane_hook_pos)
 
     # /crane_communication/status
     def start_crane_status_service(self):

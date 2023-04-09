@@ -29,6 +29,7 @@ add_service_files(
     CraneTaskCall.srv
     Position.srv
     Status.srv
+    Task.srv
     TaskCall.srv
 )
 
