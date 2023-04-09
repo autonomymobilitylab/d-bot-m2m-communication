@@ -43,17 +43,26 @@ class CraneCommunication:
         response.task = task_json
         return response
 
-    # return StatusResponse
     def get_crane_movement_status(self, req):
-        self.crane.connect()
-        res = True
-        self.crane.get_trolley_speed_request()
-        if (self.crane.get_trolley_speed_request() == 0 and
-            self.crane.get_bridge_speed_request() == 0 and
-            self.crane.get_hoist_speed_request == 0):
+        task = Task().load(req.task)
+        try:
+            self.crane.connect()
             res = False
-        self.crane.disconnect()
-        return res
+            if (self.crane.get_trolley_speed_request() == 0 and
+                self.crane.get_bridge_speed_request() == 0 and
+                self.crane.get_hoist_speed_request() == 0):
+                res = True
+                rospy.loginfo("crane not moving")
+            self.crane.disconnect()
+            task.success=res
+        except:
+            rospy.loginfo('Crane connection failed')
+            task.error = "Crane connection failed"
+            task.success = False
+        task_json = task.jsonify()
+        response = TaskCallResponse()
+        response.task = task_json
+        return response
 
     def stop_crane(self, req):
         # TODO stop correct device with request device_id
@@ -68,7 +77,7 @@ class CraneCommunication:
 
     # /crane_communication/status
     def start_crane_status_service(self):
-        return rospy.Service('status', Status, self.get_crane_movement_status)
+        return rospy.Service('/crane_communication/status', TaskCall, self.get_crane_movement_status)
     
     # /crane_communication/stop
     def start_crane_stopper_service(self):
