@@ -12,7 +12,7 @@ from beacon.services.infoService import InfoService
 from beacon.services.deviceService import DeviceService
 from beacon.buzzerUtil import BuzzerUtil
 from resources.config_loader import ConfigLoader
-from d_bot_m2m_communication.srv import TaskCall, TaskCallResponse
+from d_bot_m2m_communication.srv import TaskCall, TaskCallResponse, TaskCallRequest
 
 class BeaconCommunication:
 
@@ -25,7 +25,7 @@ class BeaconCommunication:
             rospy.loginfo('No connection to beacon auth')
         if (self.token):
             rospy.loginfo('Received access token')
-        self.rate = rospy.Rate(0.2)
+        self.rate = rospy.Rate(rospy.get_param('publish_rate', 0.2))
         self.info_service = InfoService(self.token, config['BEACON_API_URL'])
         self.device_service = DeviceService(self.token, config['BEACON_API_URL'], config['BEACON_ACCOUNT'], config['BEACON_SITE'])
         try:
@@ -47,7 +47,13 @@ class BeaconCommunication:
         for tag in res:
             rospy.loginfo('Found Tags in work area')
             success = self.device_service.play_tag_buzzer(tag)
-            rospy.loginfo(success)
+            if success:
+                rospy.loginfo("Playing tag buzzer")
+            # hardcoded assumption area contains crane
+            # TODO find good way to share enum definitions between packages
+            task = Task(11,1)
+            client = self.get_add_task_client(task)
+
 
     def init_work_area_protection(self, req):
         task = Task().load(req.task)
@@ -64,6 +70,14 @@ class BeaconCommunication:
         response = TaskCallResponse()
         response.task = task_json
         return response
+
+    def get_add_task_client(self, task:Task):
+        task_json = task.jsonify()
+        rospy.wait_for_service('/task_manager/add_task')
+        service_proxy = rospy.ServiceProxy('/task_manager/add_task', TaskCall)
+        request = TaskCallRequest()
+        request.task = task_json
+        return service_proxy(request)
 
     def taglocationPublisher(self):
         pub = rospy.Publisher('taglocation', String, queue_size=0)
