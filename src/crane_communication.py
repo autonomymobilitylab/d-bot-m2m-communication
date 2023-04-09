@@ -4,9 +4,6 @@ from ilmatar_python_lib.crane import Crane
 from dotenv import dotenv_values
 
 from api.task import Task
-from d_bot_m2m_communication.srv import Position, PositionResponse
-from d_bot_m2m_communication.srv import Status, StatusResponse
-from d_bot_m2m_communication.srv import CraneTaskCall, CraneTaskCallResponse
 from d_bot_m2m_communication.srv import TaskCall, TaskCallResponse
 from resources.config_loader import ConfigLoader
 
@@ -20,7 +17,6 @@ class CraneCommunication:
         self.crane_status_srv = self.start_crane_status_service()
         self.crane_stopper_srv = self.start_crane_stopper_service()
     
-    # returns PositionResponse
     def get_crane_hook_pos(self, req):
         task = Task().load(req.task)
         rospy.loginfo(task.jsonify())
@@ -35,9 +31,11 @@ class CraneCommunication:
                     "z": res[2]
                 }
             self.crane.disconnect()
+            task.success = True
         except:
             rospy.loginfo('Crane connection failed')
             task.error = "Crane connection failed"
+            task.success = False
         task_json = task.jsonify()
         response = TaskCallResponse()
         response.task = task_json
@@ -66,22 +64,29 @@ class CraneCommunication:
 
     def stop_crane(self, req):
         # TODO stop correct device with request device_id
-        self.crane.connect()
-        self.crane.stop_all()
-        self.crane.disconnect()
-        return True
+        task = Task().load(req.task)
+        try:
+            self.crane.connect()
+            self.crane.stop_all()
+            self.crane.disconnect()
+            task.success = True
+        except:
+            rospy.loginfo('Crane connection failed')
+            task.error = "Crane connection failed, no stopping"
+            task.success = False
+        task_json = task.jsonify()
+        response = TaskCallResponse()
+        response.task = task_json
+        return response
 
-    # /crane_communication/position
     def start_crane_position_service(self):
         return rospy.Service('/crane_communication/position', TaskCall, self.get_crane_hook_pos)
 
-    # /crane_communication/status
     def start_crane_status_service(self):
         return rospy.Service('/crane_communication/status', TaskCall, self.get_crane_movement_status)
     
-    # /crane_communication/stop
     def start_crane_stopper_service(self):
-        return rospy.Service('stop', CraneTaskCall, self.stop_crane)
+        return rospy.Service('/crane_communication/stop', TaskCall, self.stop_crane)
 
 if __name__ == '__main__':
     config = dotenv_values("resources/.env")
