@@ -22,18 +22,26 @@ class CraneCommunication:
     
     # returns PositionResponse
     def get_crane_hook_pos(self, req):
-        rospy.loginfo(req)
-        #task = Task().load(req)
-        #self.crane.connect()
-        #res = self.crane.get_coordinates_absolute()
-        #task.location = {
-        #    "x": res[0],
-        #    "y": res[1],
-        #    "z": res[2]
-        #}
-        #self.crane.disconnect()
-        # return task.jsonify()
-        return req
+        task = Task().load(req.task)
+        rospy.loginfo(task.jsonify())
+        try:
+            self.crane.connect()
+            res = self.crane.get_coordinates_absolute()
+            self.crane.connect()
+            if (res):
+                task.location = {
+                    "x": res[0],
+                    "y": res[1],
+                    "z": res[2]
+                }
+            self.crane.disconnect()
+        except:
+            rospy.loginfo('Crane connection failed')
+            task.error = "Crane connection failed"
+        task_json = task.jsonify()
+        response = TaskCallResponse()
+        response.task = task_json
+        return response
 
     # return StatusResponse
     def get_crane_movement_status(self, req):
