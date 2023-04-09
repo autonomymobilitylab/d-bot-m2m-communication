@@ -12,9 +12,9 @@ class BuzzerUtil():
         return res
 
     def is_in_work_area(self, tag, area_id):
-        # Timestamp in millis, converting to seconds
-        tag_timestamp = tag['Timestamp'] / 1000
         try:
+            # Timestamp in millis, converting to seconds
+            tag_timestamp = tag['Timestamp'] / 1000
             if (area_id in tag['Areas'] and (time.time() - tag_timestamp < 10)):
                 return True
         except:
